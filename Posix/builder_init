@@ -1,0 +1,28 @@
+#!/bin/echo Usage: . $0
+
+echo "Info: Builder Init"
+export BUILDER_START_DIR="$PWD"
+
+# search for builder custom init
+until [ "$PWD" = "/" -o -d Builder ]
+do
+    cd ..
+done
+
+if [ -e "Builder/builder_custom_init.sh" ]
+then
+    export BUILDER_TOP_DIR="${PWD}"
+
+    cd "Builder"
+    echo "Info: Builder running builder_custom_init.sh"
+    . "./builder_custom_init.sh"
+    cd "${BUILDER_START_DIR}"
+    if [ -e "${HOME}/.builderrc" ]
+    then
+        . "${HOME}/.builderrc"
+    fi
+
+else
+    cd "${BUILDER_START_DIR}"
+    unset BUILDER_START_DIR
+fi
